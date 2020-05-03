@@ -345,7 +345,7 @@ void ggdescent(double *x, int n, int p, double *zz, int diagonal, double *y,
     ggstep(x, n, p, zz, diagonal, y, lamL1, lamL2, rho, V, curth, curbp, curbn, tt, backtrack, th, bp, bn, &ttaken, &maxabsdel);
     if (maxabsdel < tol && trace != 0) {
       // note: don't need to update (curth,curbp,curbn)
-      Rprintf("GG converged in %d iterations.\n", l+1, "trace:", trace);
+      Rprintf("GG converged in %d iterations. Trace is %d \n", l+1, trace);
       break;
     }
     if (l < maxiter - 1) {
@@ -415,7 +415,7 @@ void ggdescent_logistic(double *x, int n, int p, double *zz, int diagonal, doubl
 		     tt, backtrack, b0, th, bp, bn, &ttaken, &maxabsdel);
     if (maxabsdel < tol && trace != 0) {
       // note: don't need to update (curth,curbp,curbn)
-      Rprintf("GG converged in %d iterations.\n", l+1, "trace:", trace);
+      Rprintf("GG converged in %d iterations. Trace is %d \n", l+1, trace);
       break;
     }
     if (l < maxiter - 1) {
