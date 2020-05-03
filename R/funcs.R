@@ -225,7 +225,9 @@ hierNet.path <- function(x, y, lamlist=NULL, delta=1e-8, minlam=NULL, maxlam=NUL
   obj <- rep(NA, nlam)
   aa <- NULL
   for (i in seq(nlam)) {
-    cat(c("i,lam=", i, round(lamlist[i],2)), fill=TRUE)
+    if (trace != 0) {
+      cat(c("i,lam=", i, round(lamlist[i],2)), fill=TRUE)
+    }
     aa <- hierNet(x, y, lam=lamlist[i], delta=delta, strong=strong, diagonal=diagonal, aa=aa, zz=zz,
                   stand.main=FALSE, stand.int=FALSE, # have already standardized
                   rho=rho, niter=niter, sym.eps=sym.eps,
@@ -842,7 +844,9 @@ hierNet.logistic.path <- function (x, y, lamlist=NULL, delta=1e-8, minlam=NULL, 
   obj <- rep(NA, nlam)
   aa <- NULL
   for (i in seq(nlam)) {
-    cat(c("i,lam=", i, round(lamlist[i],2)), fill=TRUE)
+    if (trace != 0) {
+      cat(c("i,lam=", i, round(lamlist[i],2)), fill=TRUE)
+    }
     aa <- hierNet.logistic(x, y, lam=lamlist[i], delta=delta, diagonal=diagonal, strong=strong, 
                            aa=aa, zz=zz, stand.main=FALSE, stand.int=FALSE,
                            rho=rho, niter=niter, sym.eps=sym.eps,
