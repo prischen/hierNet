@@ -343,7 +343,7 @@ admm4 <- function(x, xnum, y, lam.l1, lam.l2, diagonal, zz=NULL, rho, niter, aa=
   aa
 }
 
-Objective <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3, trace = 0) {
+Objective <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3, trace = -1) {
   # evaluates the NewYal objective at aa.
   if (strong) {
     if (max(aa$th-t(aa$th)) > sym.eps) {
@@ -376,7 +376,7 @@ Objective <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE,
   sum(r^2)/2 + pen
 }
 
-Objective.logistic <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3, trace = 0) {
+Objective.logistic <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3, trace = -1) {
   # evaluates the logistic hiernet objective at aa.
   stopifnot(y %in% c(0,1))
   stopifnot("diagonal" %in% names(aa))
@@ -768,7 +768,7 @@ ADMM4.Lagrangian <- function(aa, xnum, zz, y, lam.l1, lam.l2, diagonal, rho) {
       return(Inf)
     }
   if (max(aa$tt-t(aa$tt)) > 1e-8) {
-    cat("Theta is not symmetric.", fill=TRUE)
+    cat("Theta is not symmetrik.", fill=TRUE)
     return(Inf)
   }
   if (any(rowSums(abs(aa$th)) > aa$bp + aa$bn + 1e-5)) {
