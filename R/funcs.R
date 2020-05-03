@@ -86,7 +86,7 @@ hierNet <- function(x, y, lam, delta=1e-8, strong=FALSE, diagonal=TRUE, aa=NULL,
   aa$type <- "gaussian"
   aa$diagonal <- diagonal
   aa$strong <- strong
-  aa$obj <- Objective(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=strong)
+  aa$obj <- Objective(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=strong, trace = trace-1)
   aa$step <- step
   aa$maxiter <- maxiter
   aa$backtrack <- backtrack
@@ -321,7 +321,7 @@ admm4 <- function(x, xnum, y, lam.l1, lam.l2, diagonal, zz=NULL, rho, niter, aa=
     aa$tt <- 0.5 * (aa$th + t(aa$th))
     aa$u <- matrix(0, p, p)
   }
-  obj <- Objective(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps)
+  obj <- Objective(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps, trace = trace-1)
   ll <- NULL
   for (i in seq(niter)) {
     if (trace > 0) cat(i, " ")
@@ -333,7 +333,7 @@ admm4 <- function(x, xnum, y, lam.l1, lam.l2, diagonal, zz=NULL, rho, niter, aa=
     aa$bn <- gg$bn
     aa$tt <- (aa$th + t(aa$th)) / 2 + (aa$u + t(aa$u)) / (2 * rho)
     aa$u <- aa$u + rho * (aa$th - aa$tt)
-    obj <- c(obj, Objective(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps))
+    obj <- c(obj, Objective(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps, trace = trace-1))
     if (trace > 0) cat(obj[i+1], fill=TRUE)
   }
   if (max(abs(aa$th-t(aa$th))) > sym.eps)
@@ -343,11 +343,13 @@ admm4 <- function(x, xnum, y, lam.l1, lam.l2, diagonal, zz=NULL, rho, niter, aa=
   aa
 }
 
-Objective <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3) {
+Objective <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3, trace = 0) {
   # evaluates the NewYal objective at aa.
   if (strong) {
     if (max(aa$th-t(aa$th)) > sym.eps) {
-      cat("Theta is not symmetric.", fill=TRUE)
+      if (trace != 0){
+        cat("Theta is not symmetric.", fill=TRUE)
+      }
       return(Inf)
     }
   }
@@ -374,7 +376,7 @@ Objective <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE,
   sum(r^2)/2 + pen
 }
 
-Objective.logistic <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3) {
+Objective.logistic <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE, sym.eps=1e-3, trace = 0) {
   # evaluates the logistic hiernet objective at aa.
   stopifnot(y %in% c(0,1))
   stopifnot("diagonal" %in% names(aa))
@@ -385,7 +387,9 @@ Objective.logistic <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, str
     }
   if (strong) {
     if (max(aa$th-t(aa$th)) > sym.eps) {
-      cat("Theta is not symmetric.", fill=TRUE)
+      if (trace != 0){
+        cat("Theta is not symmetric.", fill=TRUE)
+      }
       return(Inf)
     }
   }
@@ -676,7 +680,7 @@ admm4.logistic <- function(x, xnum, y, lam.l1, lam.l2, diagonal, zz=NULL, rho=10
     aa$tt <- 0.5 * (aa$th + t(aa$th))
     aa$u <- matrix(0, p, p)
   }
-  obj <- Objective.logistic(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps)
+  obj <- Objective.logistic(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps, trace = trace-1)
   for (i in seq(niter)) {
     if (trace > 0) cat(i, " ")
     V <- aa$u - rho * aa$tt
@@ -686,7 +690,7 @@ admm4.logistic <- function(x, xnum, y, lam.l1, lam.l2, diagonal, zz=NULL, rho=10
     aa$bn <- gg$bn
     aa$tt <- (aa$th + t(aa$th)) / 2 + (aa$u + t(aa$u)) / (2 * rho)
     aa$u <- aa$u + rho * (aa$th - aa$tt)
-    obj <- c(obj, Objective.logistic(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps))
+    obj <- c(obj, Objective.logistic(aa=aa, x=x, y=y, lam.l1=lam.l1, lam.l2=lam.l2, xnum=xnum, zz=zz, strong=TRUE, sym.eps=sym.eps, trace = trace-1))
     if (trace > 0) cat(obj[i+1], fill=TRUE)
   }
   if (max(abs(aa$th-t(aa$th))) > sym.eps)
