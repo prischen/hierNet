@@ -225,7 +225,7 @@ hierNet.path <- function(x, y, lamlist=NULL, delta=1e-8, minlam=NULL, maxlam=NUL
   obj <- rep(NA, nlam)
   aa <- NULL
   for (i in seq(nlam)) {
-    if (trace != 0) {
+    if (trace != -1) {
       cat(c("i,lam=", i, round(lamlist[i],2)), fill=TRUE)
     }
     aa <- hierNet(x, y, lam=lamlist[i], delta=delta, strong=strong, diagonal=diagonal, aa=aa, zz=zz,
@@ -347,7 +347,7 @@ Objective <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, strong=TRUE,
   # evaluates the NewYal objective at aa.
   if (strong) {
     if (max(aa$th-t(aa$th)) > sym.eps) {
-      if (trace != 0){
+      if (trace != -1){
         cat("Theta is not symmetric.", fill=TRUE)
       }
       return(Inf)
@@ -387,7 +387,7 @@ Objective.logistic <- function(aa, x, y, lam.l1, lam.l2, xnum=NULL, zz=NULL, str
     }
   if (strong) {
     if (max(aa$th-t(aa$th)) > sym.eps) {
-      if (trace != 0){
+      if (trace != -1){
         cat("Theta is not symmetric.", fill=TRUE)
       }
       return(Inf)
@@ -848,7 +848,7 @@ hierNet.logistic.path <- function (x, y, lamlist=NULL, delta=1e-8, minlam=NULL, 
   obj <- rep(NA, nlam)
   aa <- NULL
   for (i in seq(nlam)) {
-    if (trace != 0) {
+    if (trace != -1) {
       cat(c("i,lam=", i, round(lamlist[i],2)), fill=TRUE)
     }
     aa <- hierNet.logistic(x, y, lam=lamlist[i], delta=delta, diagonal=diagonal, strong=strong, 
